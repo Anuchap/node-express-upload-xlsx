@@ -19,11 +19,8 @@ app.get('/api/test', function (req, res) {
 });
 
 app.post('/upload', upload.any(), function(req, res) {
-
-
-    //const workSheetsFromFile = xlsx.parse(__dirname + '\\' + req.files[0].path);
-
-    res.send(req.files);
+    var worksheets = xlsx.parse(req.files[0].buffer);
+    res.send(worksheets);
 });
 
 app.listen(app.get('port'), function () {
