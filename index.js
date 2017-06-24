@@ -1,6 +1,6 @@
 var express = require('express');
 var multer  = require('multer')
-var upload = multer({ dest: 'uploads/' });
+var upload = multer();
 var xlsx = require('node-xlsx');
 
 var app = express();
@@ -21,9 +21,9 @@ app.get('/api/test', function (req, res) {
 app.post('/upload', upload.any(), function(req, res) {
 
 
-    const workSheetsFromFile = xlsx.parse(__dirname + '\\' + req.files[0].path);
+    //const workSheetsFromFile = xlsx.parse(__dirname + '\\' + req.files[0].path);
 
-    res.send(workSheetsFromFile);
+    res.send(req.files);
 });
 
 app.listen(app.get('port'), function () {
