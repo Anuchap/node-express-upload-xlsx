@@ -21,33 +21,34 @@ function convertSheetToJson(sheet) {
 
         for (let j = 0; j < headers.length; j++) {
 
-            let discipline = { name: headers[j].name, value: sheet[i][headers[j].index], sub: [], isvalid: true };
+            let discipline = { name: headers[j].name, value: sheet[i][headers[j].index], subs: [], subheaders: [], isvalid: true };
 
             if (discipline.value) {
                 switch (headers[j].name) {
                     case 'Instagram Ad':
-                        discipline.sub.push(sheet[i + 2][headers[j].index]);
-                        discipline.sub.push(sheet[i + 2][headers[j].index + 1]);
+                        discipline.subheaders = ['Display', 'Video'];
+                        discipline.subs.push(sheet[i + 2][headers[j].index]);
+                        discipline.subs.push(sheet[i + 2][headers[j].index + 1]);
                         discipline.isvalid = _.sum(_.compact(discipline.sub)) === 1;
                         break;
                     case 'Display':
                     case 'Online Video':
                     case 'Creative':
-                        discipline.sub.push(sheet[i + 2][headers[j].index]);
-                        discipline.sub.push(sheet[i + 2][headers[j].index + 1]);
-                        discipline.sub.push(sheet[i + 2][headers[j].index + 2]);
+                        discipline.subheaders = ['Direct', 'Ad Network', 'Programmatic'];
+                        discipline.subs.push(sheet[i + 2][headers[j].index]);
+                        discipline.subs.push(sheet[i + 2][headers[j].index + 1]);
+                        discipline.subs.push(sheet[i + 2][headers[j].index + 2]);
                         discipline.isvalid = _.sum(_.compact(discipline.sub)) === 1;
                         break;
                     case 'YouTube Ad':
                     case 'Facebook Ad':
                         var display = sheet[i + 2][headers[j].index];
                         var video = sheet[i + 2][headers[j].index + 3];
-
-                        discipline.sub.push(sheet[i + 4][headers[j].index] * display);
-                        discipline.sub.push(sheet[i + 4][headers[j].index + 1] * display);
-                        discipline.sub.push(sheet[i + 4][headers[j].index + 3] * video);
-                        discipline.sub.push(sheet[i + 4][headers[j].index + 4] * video);
-
+                        discipline.subheaders = ['Display Desktop', 'Display Mobile', 'Video Desktop', 'Video Mobile'];
+                        discipline.subs.push(sheet[i + 4][headers[j].index] * display);
+                        discipline.subs.push(sheet[i + 4][headers[j].index + 1] * display);
+                        discipline.subs.push(sheet[i + 4][headers[j].index + 3] * video);
+                        discipline.subs.push(sheet[i + 4][headers[j].index + 4] * video);
                         discipline.isvalid = _.sum(_.compact(discipline.sub)) === 1;
                         break;
                 }
