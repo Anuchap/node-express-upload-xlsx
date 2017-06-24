@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const aws = require('aws-sdk');
-const xlsx = require('node-xlsx');
+const tnsCore = require('./tns-core');
 
 // user from .env
 // aws.config.update({
@@ -28,15 +28,18 @@ app.get('/api/test', function (req, res) {
 });
 
 app.post('/upload', upload.any(), function (req, res) {
-    uploadToS3('upload', req.files[0], function(err) {
-        if (err)  {
-            console.log(err);
-            res.send(err);
-        }
+    const result = tnsCore.xlsxToJson(req.files[0].buffer);
+    res.json(result);
 
-        var worksheets = xlsx.parse(req.files[0].buffer);
-        res.send(worksheets);
-    });
+    // uploadToS3('upload', req.files[0], function(err) {
+    //     if (err)  {
+    //         console.log(err);
+    //         res.send(err);
+    //     }
+
+    //     var worksheets = xlsx.parse(req.files[0].buffer);
+    //     res.send(worksheets);
+    // });
 });
 
 function uploadToS3(folder, file, cb) {
