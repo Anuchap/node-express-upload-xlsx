@@ -5,17 +5,18 @@ var multer = require('multer');
 //var multerS3  = require('multer-s3');
 var xlsx = require('node-xlsx');
 
-aws.config.update({
-    accessKeyId: 'AKIAIC37BNFWUYVVC4HQ',
-    secretAccessKey: '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'
-});
+// aws.config.update({
+//     accessKeyId: 'AKIAI6KSDHONSPLFKQTA',
+//     secretAccessKey: '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'
+// });
 
 var app = express();
 var s3 = new aws.S3();
+const S3_BUCKET = process.env.S3_BUCKET;
 
 var upload = multer();
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', process.env.PORT);
 
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
@@ -31,17 +32,20 @@ app.get('/api/test', function (req, res) {
 
 app.post('/upload', upload.any(), function (req, res) {
     var param = {
-        Bucket: 'tns-excel/complete',
+        Bucket: S3_BUCKET + '/complete',
         Key: Date.now() + '_' + req.files[0].originalname,
         Body: req.files[0].buffer
     };
 
     s3.putObject(param, function (err, data) {
-        if (err) console.log(err);
-    });
+        if (err)  {
+            console.log(err);
+            res.send(err);
+        }
 
-    var worksheets = xlsx.parse(req.files[0].buffer);
-    res.send(worksheets);
+        var worksheets = xlsx.parse(req.files[0].buffer);
+        res.send(worksheets);
+    });
 });
 
 app.listen(app.get('port'), function () {
