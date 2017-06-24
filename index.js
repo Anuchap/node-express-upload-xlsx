@@ -6,8 +6,8 @@ var multer = require('multer');
 var xlsx = require('node-xlsx');
 
 aws.config.update({
-    accessKeyId: 'AKIAILNLO4RXHZVIEEVQ',
-    secretAccessKey: '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'
+    accessKeyId: 'AKIAIC37BNFWUYVVC4HQ',
+    secretAccessKey: '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'
 });
 
 var app = express();
