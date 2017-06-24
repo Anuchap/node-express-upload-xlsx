@@ -1,26 +1,23 @@
-var express = require('express');
-var aws = require('aws-sdk');
-var bodyParser = require('body-parser');
-var multer = require('multer');
-//var multerS3  = require('multer-s3');
-var xlsx = require('node-xlsx');
+const express = require('express');
+const bodyParser = require('body-parser');
+const multer = require('multer');
+const aws = require('aws-sdk');
+const xlsx = require('node-xlsx');
 
+// user from .env
 // aws.config.update({
 //     accessKeyId: 'AKIAI6KSDHONSPLFKQTA',
 //     secretAccessKey: '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'
 // });
 
-var app = express();
-var s3 = new aws.S3();
 const S3_BUCKET = process.env.S3_BUCKET;
 
-var upload = multer();
+const app = express();
+const upload = multer();
 
 app.set('port', process.env.PORT);
-
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
-
 
 app.get('/', function (req, res) {
     res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
@@ -31,13 +28,7 @@ app.get('/api/test', function (req, res) {
 });
 
 app.post('/upload', upload.any(), function (req, res) {
-    var param = {
-        Bucket: S3_BUCKET + '/complete',
-        Key: Date.now() + '_' + req.files[0].originalname,
-        Body: req.files[0].buffer
-    };
-
-    s3.putObject(param, function (err, data) {
+    uploadToS3('upload', req.files[0], function(err) {
         if (err)  {
             console.log(err);
             res.send(err);
@@ -47,6 +38,16 @@ app.post('/upload', upload.any(), function (req, res) {
         res.send(worksheets);
     });
 });
+
+function uploadToS3(folder, file, cb) {
+    const s3 = new aws.S3();
+    var param = {
+        Bucket: S3_BUCKET + '/' + folder,
+        Key: Date.now() + '_' + file.originalname,
+        Body: file.buffer
+    };
+    s3.putObject(param, cb);
+}
 
 app.listen(app.get('port'), function () {
     console.log('Node app is running on port', app.get('port'));
