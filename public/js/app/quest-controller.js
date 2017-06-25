@@ -8,8 +8,7 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
     $scope.ans8 = [1,1,1,1,1,1,1,1];
 
     function sendAnswer(qno, answer, optional, callback) {
-         $http.post('answer.php', {
-            uid: $stateParams.uid,
+         $http.post('api/answer/' + $stateParams.uid, {
             qno: qno,
             answer: answer + '',
             optional: optional + ''
@@ -213,7 +212,7 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
             sendAnswer('10.2', $scope.ans10_2, null, function () {
                 store.ans10_2 = $scope.ans10_2;
 
-                $http.get('finished.php?uid=' + $stateParams.uid).success(function () {
+                $http.get('api/setstatus/' + $stateParams.uid + '/finished').success(function () {
                     $state.go('thankyou2', {
                         uid: $stateParams.uid
                     });
@@ -221,5 +220,4 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
             });
         });
     };
-
 });

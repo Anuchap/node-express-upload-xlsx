@@ -68,7 +68,7 @@ angular.module('myApp').controller('summaryCtrl', function ($scope, $state, $htt
     };
 
     $scope.backToBrowse = function () {
-        $http.get('api/back/' + $stateParams.uid).success(function () {
+        $http.get('api/setstatus/' + $stateParams.uid + '/back').success(function () {
             $scope.uploaded = false;
         });
     };

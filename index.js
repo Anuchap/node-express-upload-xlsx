@@ -32,26 +32,58 @@ app.get('/api/test', function (req, res) {
 
 app.get('/api/checkstatus/:agencyId', function (req, res) {
     lastActivity(req.params.agencyId, function (err, rows) {
-        if(err) res.json(err);
+        if (err) res.json(err);
         res.json({ status: rows.length ? rows[0].status : 'no status found' });
     });
 });
 
-app.get('/api/started/:agencyId', function (req, res) {
-    lastActivity(req.params.agencyId, function (err, rows) {
-        var filename = rows.length ? rows[0].filename : '';
-        log(req.params.agencyId, filename, 'started');
-    });
-    res.json('log status to started');
+app.get('/api/setstatus/:agencyId/:status', function(req, res) {
+    updateStatus(req.params.agencyId, req.params.status);
+    res.send('log stattus to ' + req.params.status);
 });
 
-app.get('/api/back/:agencyId', function (req, res) {
-    lastActivity(req.params.agencyId, function (err, rows) {
-        var filename = rows.length ? rows[0].filename : '';
-        log(req.params.agencyId, filename, 'back');
+app.post('/api/upload/:agencyId', upload.any(), function (req, res) {
+    var file = req.files[0];
+    var filename = Date.now() + '_' + req.params.agencyId + '.xlsx';
+    var s3 = new aws.S3();
+    var param = {
+        Bucket: S3_BUCKET + '/upload',
+        Key: filename,
+        Body: file.buffer
+    };
+    s3.putObject(param, function (err) {
+        if (err) console.log(err);
+        log(req.params.agencyId, filename, 'uploaded');
+        var result = tns.xlsxToJson(req.files[0].buffer);
+        res.json(result);
     });
-    res.json('log status to back');
 });
+
+app.post('/api/submit/:agencyId', function (req, res) {
+    genDisciplines(req.params.agencyId, 1, req.body[0]);
+    genDisciplines(req.params.agencyId, 2, req.body[1]);
+    updateStatus(req.params.agencyId, 'submitted');
+    res.json();
+});
+
+app.post('/api/answer/:agencyId', function (req, res) {
+    connection.query('insert into answer(datetime,qno,answer,optional,agency_id) values(NOW(),?,?,?,?)',
+        [req.body.qno, req.body.answer, req.body.optional, req.params.agencyId], function (err, r) {
+            if (err) console.log(err);
+            res.json(r);
+        });
+});
+
+app.listen(app.get('port'), function () {
+    console.log('Node app is running on port', app.get('port'));
+});
+
+function updateStatus(agencyId, status) {
+    lastActivity(agencyId, function (err, rows) {
+        var filename = rows.length ? rows[0].filename : '';
+        log(agencyId, filename, status);
+    });
+}
 
 function lastActivity(agencyId, cb) {
     connection.query('select * from log where agency_id = ? order by id desc limit 1', [agencyId], cb);
@@ -71,33 +103,6 @@ function log(agencyId, fileName, status) {
             }
         });
 }
-
-app.post('/api/upload/:agencyId', upload.any(), function (req, res) {
-    var file = req.files[0];
-    var filename = Date.now() + '_' + req.params.agencyId + '.xlsx';
-    var s3 = new aws.S3();
-    var param = {
-        Bucket: S3_BUCKET + '/upload',
-        Key: filename,
-        Body: file.buffer
-    };
-    s3.putObject(param, function(err) {
-        if(err) console.log(err);
-        log(req.params.agencyId, filename, 'uploaded');
-        var result = tns.xlsxToJson(req.files[0].buffer);
-        res.json(result);
-    });
-});
-
-app.post('/api/submit/:agencyId', function(req, res) {
-    genDisciplines(req.params.agencyId, 1, req.body[0]);
-    genDisciplines(req.params.agencyId, 2, req.body[1]);
-    lastActivity(req.params.agencyId, function (err, rows) {
-        var filename = rows.length ? rows[0].filename : '';
-        log(req.params.agencyId, filename, 'submitted');
-    });
-    res.json();
-});
 
 function genDisciplines(agencyId, sheetNo, categories) {
     categories.forEach(function (category) {
@@ -123,7 +128,3 @@ function genDisciplines(agencyId, sheetNo, categories) {
         });
     });
 }
-
-app.listen(app.get('port'), function () {
-    console.log('Node app is running on port', app.get('port'));
-});

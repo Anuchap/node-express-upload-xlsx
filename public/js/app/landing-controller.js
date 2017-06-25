@@ -17,7 +17,7 @@ angular.module('myApp').controller('landingCtrl', function ($scope, $state, $sta
                     }
                 });
             } else {
-                $http.get('api/started/' + $stateParams.uid).success(function () {
+                $http.get('api/setstatus/' + $stateParams.uid + '/started').success(function () {
                     $state.go('summary', {
                         uid: $stateParams.uid
                     });
