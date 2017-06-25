@@ -1,0 +1,43 @@
+<h2>Part 2: Industry & Business Overview</h2>
+
+<div class="question-container">
+    <p>6.ในกลุ่มลูกค้าของคุณ มีลูกค้า กี่ราย (จากจำนวนลูกค้าทั้งหมดของคุณ)ที่ยอมให้ access หรือ own data จากงานโฆษณา เช่นcookies,
+        website stat, etc.(กรุณาระบุจำนวนเป็นรายบริษัท โดยผลรวมไม่จำเป็นต้องเท่ากับข้อ 4.1)</p>
+
+    <!--<ul>
+        <li>
+            a.ยอมให้ access to data
+            <input type="text" ng-model="ans6[1]" numbers-only class="form-control answer-box" />ราย ไม่ยอม
+            <input type="text" ng-model="ans6[2]" numbers-only class="form-control answer-box" />ราย ไม่ทราบ/ไม่ระบุ
+            <input type="text" ng-model="ans6[3]" numbers-only class="form-control answer-box" />ราย
+        </li>
+        <li>
+            b.ยอมให้เอเยนซี่ own data
+            <input type="text" ng-model="ans6[4]" numbers-only class="form-control answer-box" />ราย ไม่ยอม
+            <input type="text" ng-model="ans6[5]" numbers-only class="form-control answer-box" />ราย ไม่ทราบ/ไม่ระบุ
+            <input type="text" ng-model="ans6[6]" numbers-only class="form-control answer-box" />ราย
+    </ul>-->
+
+    <ul>
+        <li>
+            a. ไม่อนุญาตให้เอเยนซี่ access to data และ own data
+            <input type="text" ng-model="ans6[1]" numbers-only class="form-control answer-box" />
+            ราย
+        </li>
+        <li>
+            b. อนุญาตให้เอเยนซี่ access to data แต่ไม่ให้ own data 
+            <input type="text" ng-model="ans6[2]" numbers-only class="form-control answer-box" />
+            ราย
+        </li>
+        <li>
+            c.อนุญาตให้เอเยนซี่ access to data และ own data 
+            <input type="text" ng-model="ans6[3]" numbers-only class="form-control answer-box" />
+            ราย
+        </li>
+    </ul>
+</div>
+
+<ul class="pager">
+    <li class="previous"><a ui-sref="quest5({ uid: uid_ })">&larr; Back</a></li>
+    <li class="next"><a ng-click="goToQuest7()">Next &rarr;</a></li>
+</ul>

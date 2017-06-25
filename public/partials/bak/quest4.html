@@ -1,0 +1,25 @@
+<h2>Part 2: Industry & Business Overview</h2>
+
+<div class="question-container">
+    <p>Q4 For all clients you have been working with, how is their total media spending allocated across media in Jan-Dec 2015 (approximately).</p>
+</div>
+
+<div class="row">
+    <div class="col-md-2 text-right">Digital <strong>{{ slider2.value }}%</strong></div>
+    <div class="col-md-6">
+        <rzslider rz-slider-model="slider2.value" rz-slider-options="slider2.options"></rzslider>
+    </div>
+    <div class="col-md-2">Offline <strong>{{ slider2.value2 }}%</strong></div>
+</div>
+
+<ul class="pager">
+    <li class="previous"><a ui-sref="quest3({ uid: uid_ })">&larr; Back</a></li>
+    <li class="next" ng-class="{ 'disabled': submitBtn }"><a ng-click="submitBtn || goToThankYou2()">Submit</a></li>
+</ul>
+
+<style>
+    .rz-bubble {
+        display: none;
+    }
+
+</style>

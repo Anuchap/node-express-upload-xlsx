@@ -1,0 +1,30 @@
+<h2>Part 2: Industry & Business Overview</h2>
+
+<div class="question-container">
+    <p>Q1 Please rank the percentage of change for digital advertising spend that you expect for your clients in 2016?</p>
+
+    <ul id="choice1">
+        <li>
+            <input type="radio" ng-model="ans1" value="1" /> Increase
+            <input type="text" class="form-control" ng-model="ans11" style="width: 200px; display: inline;" placeholder="Please indicate percentage" />%
+        </li>
+        <li>
+            <input type="radio" ng-model="ans1" value="2" /> No change</li>
+        <li>
+            <input type="radio" ng-model="ans1" value="3" /> Decrease
+            <input type="text" class="form-control" ng-model="ans13" style="width: 200px; display: inline;" placeholder="Please indicate percentage" />%
+        </li>
+        </li>
+    </ul>
+</div>
+
+<ul class="pager">
+    <li class="next"><a ng-click="goToQuest2()">Next &rarr;</a></li>
+</ul>
+
+<style>
+    #choice1 li {
+        margin-bottom: 10px;
+    }
+
+</style>

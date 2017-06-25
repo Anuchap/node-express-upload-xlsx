@@ -1,0 +1,39 @@
+<h2>Part 2: Industry & Business Overview</h2>
+
+<div class="question-container">
+    <p>8.กรุณาระบุความพึงพอใจในภาพรวมของการใช้งานมีเดียในแพลตฟอร์มต่อไปนี้ (ทั้งนี้ ภาพรวม หมายรวมถึง การให้บริการของ publisher และ ประสิทธิภาพของแพลตฟอร์ม) โดยที่ 1 หมายถึง พึงพอใจน้อยที่สุด และ 10 หมายถึง พึงพอใจมากที่สุด</p>
+
+    <ul>
+       <ul>
+        <li>Google(including Youtube) rating 
+             <div star-rating ng-model="ans8[0]" max="10"></div>
+        </li>
+        <li>Facebook rating
+            <div star-rating ng-model="ans8[1]" max="10"></div>
+        </li>
+        <li>Instagram rating
+            <div star-rating ng-model="ans8[2]" max="10"></div>
+        </li>
+        <li>LINE rating
+            <div star-rating ng-model="ans8[3]" max="10"></div>
+        </li>
+        <li>Influencer Review/ Share Content rating
+            <div star-rating ng-model="ans8[4]" max="10"></div>
+        </li>
+        <li>Portal Website rating
+            <div star-rating ng-model="ans8[5]" max="10"></div>
+        </li>
+        <li>Programmatic rating
+            <div star-rating ng-model="ans8[6]" max="10"></div>
+        </li>
+        <li>Native Ad rating
+            <div star-rating ng-model="ans8[7]" max="10"></div>
+        </li>
+    </ul>
+    </ul>
+</div>
+
+<ul class="pager">
+    <li class="previous"><a ui-sref="quest7({ uid: uid_ })">&larr; Back</a></li>
+    <li class="next"><a ng-click="goToQuest9()">Next &rarr;</a></li>
+</ul>

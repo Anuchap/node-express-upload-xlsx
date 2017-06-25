@@ -1,19 +1,22 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const multer = require('multer');
-const aws = require('aws-sdk');
-const tnsCore = require('./tns-core');
+var express = require('express');
+var bodyParser = require('body-parser');
+var multer = require('multer');
+var aws = require('aws-sdk');
+var mysql = require('mysql');
 
-// user from .env
-// aws.config.update({
-//     accessKeyId: 'AKIAI6KSDHONSPLFKQTA',
-//     secretAccessKey: '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'
-// });
+var tns = require('./tns-core');
 
-const S3_BUCKET = process.env.S3_BUCKET;
+var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'tns_adsurvey_2017'
+});
 
-const app = express();
-const upload = multer();
+var S3_BUCKET = process.env.S3_BUCKET;
+
+var app = express();
+var upload = multer();
 
 app.set('port', process.env.PORT);
 app.use(bodyParser.json());
@@ -27,29 +30,98 @@ app.get('/api/test', function (req, res) {
     res.json({ result: 'OK' });
 });
 
-app.post('/upload', upload.any(), function (req, res) {
-    const result = tnsCore.xlsxToJson(req.files[0].buffer);
-    res.json(result);
-
-    // uploadToS3('upload', req.files[0], function(err) {
-    //     if (err)  {
-    //         console.log(err);
-    //         res.send(err);
-    //     }
-
-    //     var worksheets = xlsx.parse(req.files[0].buffer);
-    //     res.send(worksheets);
-    // });
+app.get('/api/checkstatus/:agencyId', function (req, res) {
+    lastActivity(req.params.agencyId, function (err, rows) {
+        if(err) res.json(err);
+        res.json({ status: rows.length ? rows[0].status : 'no status found' });
+    });
 });
 
-function uploadToS3(folder, file, cb) {
-    const s3 = new aws.S3();
+app.get('/api/started/:agencyId', function (req, res) {
+    lastActivity(req.params.agencyId, function (err, rows) {
+        var filename = rows.length ? rows[0].filename : '';
+        log(req.params.agencyId, filename, 'started');
+    });
+    res.json('log status to started');
+});
+
+app.get('/api/back/:agencyId', function (req, res) {
+    lastActivity(req.params.agencyId, function (err, rows) {
+        var filename = rows.length ? rows[0].filename : '';
+        log(req.params.agencyId, filename, 'back');
+    });
+    res.json('log status to back');
+});
+
+function lastActivity(agencyId, cb) {
+    connection.query('select * from log where agency_id = ? order by id desc limit 1', [agencyId], cb);
+}
+
+function log(agencyId, fileName, status) {
+    connection.query('insert into log(agency_id,datetime,filename,status) values (?,NOW(),?,?)',
+        [agencyId, fileName, status], function (err, r) {
+            if (err) console.log(err);
+            if (status === 'uploaded') {
+                connection.query('select id from log where agency_id = ? and status = "started" order by id desc limit 1', [agencyId], function (err, rows) {
+                    if (err) console.log(err);
+                    connection.query('update log set filename = ? where id = ?', [fileName, rows[0].id], function (err, r) {
+                        if (err) console.log(err);
+                    });
+                });
+            }
+        });
+}
+
+app.post('/api/upload/:agencyId', upload.any(), function (req, res) {
+    var file = req.files[0];
+    var filename = Date.now() + '_' + req.params.agencyId + '.xlsx';
+    var s3 = new aws.S3();
     var param = {
-        Bucket: S3_BUCKET + '/' + folder,
-        Key: Date.now() + '_' + file.originalname,
+        Bucket: S3_BUCKET + '/upload',
+        Key: filename,
         Body: file.buffer
     };
-    s3.putObject(param, cb);
+    s3.putObject(param, function(err) {
+        if(err) console.log(err);
+        log(req.params.agencyId, filename, 'uploaded');
+        var result = tns.xlsxToJson(req.files[0].buffer);
+        res.json(result);
+    });
+});
+
+app.post('/api/submit/:agencyId', function(req, res) {
+    genDisciplines(req.params.agencyId, 1, req.body[0]);
+    genDisciplines(req.params.agencyId, 2, req.body[1]);
+    lastActivity(req.params.agencyId, function (err, rows) {
+        var filename = rows.length ? rows[0].filename : '';
+        log(req.params.agencyId, filename, 'submitted');
+    });
+    res.json();
+});
+
+function genDisciplines(agencyId, sheetNo, categories) {
+    categories.forEach(function (category) {
+        var categoryName = category.name;
+        category.disciplines.forEach(function (discipline) {
+            var disciplineName = discipline.name;
+            var value = discipline.value;
+            if (value) {
+                connection.query('insert into discipline(agency_id,sheet,name,category_name,value) values (?,?,?,?,?)',
+                    [agencyId, sheetNo, disciplineName, categoryName, value], function (err, r) {
+                        if (err) console.log(err);
+                        var disciplineId = r.insertId;
+                        discipline.subs.forEach(function (sub, i) {
+                            if (sub) {
+                                connection.query('insert into sub_discipline(discipline_id,name,percent) values (?,?,?)',
+                                    [r.insertId, discipline.subheaders[i], sub], function (err, r) {
+                                        if (err) console.log(err);
+                                    });
+                            }
+                        });
+                    });
+            }
+        });
+    });
 }
 
 app.listen(app.get('port'), function () {

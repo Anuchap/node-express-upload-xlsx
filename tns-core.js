@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const xlsx = require('node-xlsx');
+var _ = require('lodash');
+var xlsx = require('node-xlsx');
 
 exports.xlsxToJson = function (file) {
     var worksheets = xlsx.parse(file);
@@ -14,42 +14,50 @@ function convertSheetToJson(sheet) {
 
     var categories = [];
 
-    for (let i = 2; i < sheet.length; i = i + 6) {
+    for (var i = 2; i < sheet.length; i = i + 6) {
         if (!sheet[i][0]) continue;
 
-        var cat = { name: sheet[i][0].split('(')[0].trim(), disciplines: [] };
+        var cat = { name: sheet[i][0].trim(), disciplines: [], total: 0 };
 
-        for (let j = 0; j < headers.length; j++) {
+        for (var j = 0; j < headers.length; j++) {
 
-            let discipline = { name: headers[j].name, value: sheet[i][headers[j].index], subs: [], subheaders: [], isvalid: true };
+            var discipline = { name: headers[j].name, value: sheet[i][headers[j].index], subs: [], subheaders: [], isvalid: true, type: null };
 
             if (discipline.value) {
+                cat.total += discipline.value;
                 switch (headers[j].name) {
                     case 'Instagram Ad':
+                        discipline.type = 3;
                         discipline.subheaders = ['Display', 'Video'];
                         discipline.subs.push(sheet[i + 2][headers[j].index]);
                         discipline.subs.push(sheet[i + 2][headers[j].index + 1]);
-                        discipline.isvalid = _.sum(_.compact(discipline.sub)) === 1;
+                        discipline.isvalid = _.sum(_.compact(discipline.subs)) === 1;
                         break;
                     case 'Display':
                     case 'Online Video':
                     case 'Creative':
+                        discipline.type = 1;
                         discipline.subheaders = ['Direct', 'Ad Network', 'Programmatic'];
+                        if(headers[j].name === 'Creative') {
+                            discipline.type = 4;
+                            discipline.subheaders = ['Online Video', 'Web Banner', 'Social Media'];
+                        }
                         discipline.subs.push(sheet[i + 2][headers[j].index]);
                         discipline.subs.push(sheet[i + 2][headers[j].index + 1]);
                         discipline.subs.push(sheet[i + 2][headers[j].index + 2]);
-                        discipline.isvalid = _.sum(_.compact(discipline.sub)) === 1;
+                        discipline.isvalid = _.sum(_.compact(discipline.subs)) === 1;   
                         break;
                     case 'YouTube Ad':
                     case 'Facebook Ad':
+                        discipline.type = 2;
+                        discipline.subheaders = ['Display Desktop', 'Display Mobile', 'Video Desktop', 'Video Mobile'];
                         var display = sheet[i + 2][headers[j].index];
                         var video = sheet[i + 2][headers[j].index + 3];
-                        discipline.subheaders = ['Display Desktop', 'Display Mobile', 'Video Desktop', 'Video Mobile'];
                         discipline.subs.push(sheet[i + 4][headers[j].index] * display);
                         discipline.subs.push(sheet[i + 4][headers[j].index + 1] * display);
                         discipline.subs.push(sheet[i + 4][headers[j].index + 3] * video);
                         discipline.subs.push(sheet[i + 4][headers[j].index + 4] * video);
-                        discipline.isvalid = _.sum(_.compact(discipline.sub)) === 1;
+                        discipline.isvalid = _.sum(_.compact(discipline.subs)) > 0.99;
                         break;
                 }
             }

@@ -1,0 +1,84 @@
+<h2>Part 1: Digital Ad Spending Survey 2016</h2>
+
+<div style="margin-top: 25px;" ng-hide="uploaded">
+    <div class="col-md-8">
+        <input type="file" onchange="angular.element(this).scope().setFile(this)">
+    </div>
+    <div class="col-md-3">
+        <button ng-click="uploadFile()" class="btn btn-warning" ng-disabled="currentFile == undefined">Verify Data</button>
+    </div>
+    <div class="col-md-12" style="margin-top: 10px;">
+        <div class="alert alert-danger" role="alert" ng-show="errorMessage">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span> {{errorMessage}}
+        </div>
+    </div>
+</div>
+
+<script>
+    $(":file").filestyle({ buttonName: 'btn-danger', buttonText: 'Browse File to Verify' });
+
+</script>
+
+<div ng-show="uploaded">
+    <table class="table">
+        <thead style="background-color: #eee;">
+            <tr>
+                <th>Total
+                    <br/>Spending</th>
+                <th class="text-right">2016
+                    <br/>{{ total15 | number:0 }} ฿</th>
+                <th class="text-right">2017(FC)
+                    <br/>{{ total16 | number:0 }} ฿</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="d in data">
+                <td>{{ d.y15.name }}</td>
+                <td class="text-right">
+                    <a style="cursor: pointer;" ng-class="{ 'text-danger': !verify(d.y15.disciplines) }" ng-click="showDetail(d.name, d.y15)">{{ d.y15.total | number:0 }} ฿</a>                    &nbsp;
+                    <span class="glyphicon glyphicon-ok-sign text-success" ng-class="{ 'text-danger': !verify(d.y15.disciplines), 'glyphicon-exclamation-sign': !verify(d.y15.disciplines) }"
+                        aria-hidden="true"></span>
+                </td>
+                <td class="text-right">
+                    <a style="cursor: pointer;" ng-class="{ 'text-danger': !verify(d.y16.disciplines) }" ng-click="showDetail(d.name, d.y16)">{{ d.y16.total | number:0 }} ฿</a>                    &nbsp;
+                    <span class="glyphicon glyphicon-ok-sign text-success" ng-class="{ 'text-danger': !verify(d.y16.disciplines), 'glyphicon-exclamation-sign': !verify(d.y16.disciplines) }"
+                        aria-hidden="true"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="alert alert-danger" role="alert" ng-hide="!submitBtn">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span> Please review and make necessary changes on the excel sheet
+    </div>
+
+    <button class="btn btn-default" ng-click="backToBrowse()">Back</button>
+
+    <button class="btn btn-danger" ng-click="goToThankYou()" ng-disabled="submitBtn" style="cursor: pointer;" title="{{ submitMessage }}">Submit</button>
+</div>
+
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-body">
+        <table class="table">
+            <thead style="background-color: #eee;">
+                <tr>
+                    <th>{{ data.name }}</th>
+                    <th class="text-right" style="white-space: nowrap;">{{ data.data.total | number:0 }} ฿</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="d in data.data.disciplines">
+                    <td ng-class="{ 'text-danger': !d.isvalid }">
+                        <mypopover type="{{ d.type }}" detail="d.subs">{{ d.name }}</mypopover>
+                    </td>
+                    <td ng-class="{ 'text-danger': !d.isvalid }" class="text-right">{{ d.value | number:0 }} ฿</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Close</button>
+    </div>
+</script>

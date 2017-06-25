@@ -1,0 +1,20 @@
+<h2>Part 1: Digital Ad Spending Survey 2016</h2>
+
+<div style="margin-top: 25px;">
+	<div class="col-md-8">
+		<input type="file" onchange="angular.element(this).scope().setFile(this)">
+	</div>
+	<div class="col-md-3">
+		<button ng-click="uploadFile()" class="btn btn-warning" ng-disabled="currentFile == undefined">Verify Data</button>
+	</div>
+	<div class="col-md-12" style="margin-top: 10px;">
+		<div class="alert alert-danger" role="alert" ng-show="errorMessage" >
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span> {{errorMessage}}
+		</div>
+	</div>
+</div>
+
+<script>
+	$(":file").filestyle({ buttonName: 'btn-danger', buttonText: 'Browse File to Verify' });
+</script>
