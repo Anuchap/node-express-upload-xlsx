@@ -8,11 +8,15 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
     $scope.ans8 = [1,1,1,1,1,1,1,1];
 
     function sendAnswer(qno, answer, optional, callback) {
+        loader.show()
          $http.post('api/answer/' + $stateParams.uid, {
             qno: qno,
             answer: answer + '',
             optional: optional + ''
-        }).success(callback);
+        }).success(function(res) {
+            loader.hide(); 
+            callback(res);
+        });
     }
 
     // Quests 1 - 10

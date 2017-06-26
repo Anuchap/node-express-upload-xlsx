@@ -8,7 +8,7 @@ angular.module('myApp').controller('summaryCtrl', function ($scope, $state, $htt
     };
 
     $scope.uploadFile = function () {
-        loader.show();
+        loader.show('Data Verifying...');
         var formData = new FormData();
         formData.append("file", $scope.currentFile);
         //formData.append("uid", $stateParams.uid);
@@ -68,7 +68,9 @@ angular.module('myApp').controller('summaryCtrl', function ($scope, $state, $htt
     };
 
     $scope.backToBrowse = function () {
+        loader.show();
         $http.get('api/setstatus/' + $stateParams.uid + '/back').success(function () {
+            loader.hide();
             $scope.uploaded = false;
         });
     };
@@ -84,7 +86,9 @@ angular.module('myApp').controller('summaryCtrl', function ($scope, $state, $htt
             b.push(item.y16);
         });
 
+        loader.show();
         $http.post('api/submit/' + $stateParams.uid, [a, b]).success(function () {
+            loader.hide();
             $state.go('thankyou', {
                 uid: $stateParams.uid
             });
