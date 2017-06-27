@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var aws = require('aws-sdk');
 var mysql = require('mysql');
+var dateFormat = require('dateformat');
 
 var tns = require('./tns-core');
 
@@ -32,6 +33,16 @@ app.get('/api/test', function (req, res) {
     res.json({ result: 'OK' });
 });
 
+app.get('/api/log', function (req, res) {
+    connection.query('select id, addtime(datetime, "07:00:00") datetime, agency_id, filename, status from log order by id', function (err, rows) {
+        if (err) res.write(err);
+        rows.forEach(function (row) {
+            res.write(row.id + ' ' + dateFormat(row.datetime, 'yyyy-mm-dd HH:MM:ss') + ' ' + row.agency_id + ' ' + row.filename + ' ' + row.status + '\n');
+        });
+        res.end();
+    });
+});
+
 app.get('/api/checkstatus/:agencyId', function (req, res) {
     lastActivity(req.params.agencyId, function (err, rows) {
         if (err) res.json(err);
@@ -39,7 +50,7 @@ app.get('/api/checkstatus/:agencyId', function (req, res) {
     });
 });
 
-app.get('/api/setstatus/:agencyId/:status', function(req, res) {
+app.get('/api/setstatus/:agencyId/:status', function (req, res) {
     updateStatus(req.params.agencyId, req.params.status);
     res.send('log stattus to ' + req.params.status);
 });
