@@ -8,3 +8,5 @@ myApp.run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state,
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
 }]);
+
+window.onbeforeunload = function () { return 'Changes you made may not be saved.'; };

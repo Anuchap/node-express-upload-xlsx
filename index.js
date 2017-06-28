@@ -21,7 +21,7 @@ var db_config = process.env.CLEARDB_DATABASE_URL;
 // var db_config = {
 //     host: 'localhost',
 //     user: 'root',
-//     password: 'morningM00n',
+//     password: '',
 //     database: 'tns_adsurvey_2017'
 // };
 
@@ -47,7 +47,7 @@ function handleDisconnect() {
   });
 }
 handleDisconnect();
-setInterval(function () { connection.query('SELECT 1'); }, 5000);
+//setInterval(function () { connection.query('SELECT 1'); }, 5000);
 
 
 var S3_BUCKET = process.env.S3_BUCKET;
