@@ -80,7 +80,7 @@ app.post('/api/submit/:agencyId', function (req, res) {
 });
 
 app.post('/api/answer/:agencyId', function (req, res) {
-    connection.query('insert into answer(datetime,qno,answer,optional,agency_id) values(NOW(),?,?,?,?)',
+    connection.query('insert into answer(datetime,qno,answer,optional,agency_id) values(NOW(),?,?,?,?) on duplicate key update answer=values(answer), optional=values(optional)',
         [req.body.qno, req.body.answer, req.body.optional, req.params.agencyId], function (err, r) {
             if (err) console.log(err);
             res.json(r);
