@@ -1,25 +1,41 @@
 <h2>Part 2: Industry & Business Overview</h2>
 
 <div class="question-container">
-    <p>Q4 For all clients you have been working with, how is their total media spending allocated across media in Jan-Dec 2015 (approximately).</p>
+    <p>4.1 กรุณาระบุจำนวนลูกค้าทั้งหมดที่มี รวม  <input type="text" ng-model="ans4_1" class="form-control answer-box" />ราย</p>
 </div>
 
-<div class="row">
-    <div class="col-md-2 text-right">Digital <strong>{{ slider2.value }}%</strong></div>
-    <div class="col-md-6">
-        <rzslider rz-slider-model="slider2.value" rz-slider-options="slider2.options"></rzslider>
-    </div>
-    <div class="col-md-2">Offline <strong>{{ slider2.value2 }}%</strong></div>
+<div class="question-container">
+    <p>4.2 ในจำนวนสัญญาที่เอเยนซี่ทำกับลูกค้า สัญญาที่มีกับลูกค้าสั้นยาว ต่อไปนี้ มีสัดส่วนเท่าใดของจำนวนสัญญาทั้งหมด(คิดจากจำนวนลูกค้า)กรุณาระบุจำนวนลูกค้าที่มีแยกตามรายละเอียดสัญญา (โดยผลรวมทั้งหมดต้องเท่ากับข้อ 4.1)</p>
+
+    <ul>
+        <li>
+            ไม่มีสัญญา 
+            <input type="text" ng-model="ans4_2[1]" numbers-only class="form-control answer-box" />ราย</li>
+        <li>
+            สัญญา adhoc project by project
+            <input type="text" ng-model="ans4_2[2]" numbers-only class="form-control answer-box" />ราย</li>
+        <li>
+            Retainer แต่ระยะเวลา < 6 เดือน
+            <input type="text" ng-model="ans4_2[3]" numbers-only class="form-control answer-box" />ราย</li>
+        <li>
+            Retainer 6-11 เดือน
+            <input type="text" ng-model="ans4_2[4]" numbers-only class="form-control answer-box" />ราย</li>
+        <li>
+            Retainer 12-23 เดือน
+            <input type="text" ng-model="ans4_2[5]" numbers-only class="form-control answer-box" />ราย</li>
+        <li>
+            Retainer 24- 35 เดือน
+            <input type="text" ng-model="ans4_2[6]" numbers-only class="form-control answer-box" />ราย</li>
+        <li>
+            Retainer 36 เดือนหรือมากกว่า
+            <input type="text" ng-model="ans4_2[7]" numbers-only class="form-control answer-box" />ราย</li>
+        <li>
+            Retainer แต่ไม่มีกำหนดสิ้นสุด
+            <input type="text" ng-model="ans4_2[8]" numbers-only class="form-control answer-box" />ราย</li>
+    </ul>
 </div>
 
 <ul class="pager">
     <li class="previous"><a ui-sref="quest3({ uid: uid_ })">&larr; Back</a></li>
-    <li class="next" ng-class="{ 'disabled': submitBtn }"><a ng-click="submitBtn || goToThankYou2()">Submit</a></li>
+    <li class="next"><a ng-click="goToQuest5()">Next &rarr;</a></li>
 </ul>
-
-<style>
-    .rz-bubble {
-        display: none;
-    }
-
-</style>

@@ -1,25 +1,43 @@
 <h2>Part 2: Industry & Business Overview</h2>
 
 <div class="question-container">
-    <p>Q2 Which of the following best describes most of your clients objectives for digital ad spend?</p>
+    <p>2.หากแบ่งประเภทของงานโฆษณาดิจิทัลตามวัตถุประสงค์ของงานโฆษณาดิจิทัลที่ลูกค้าได้บรีฟให้กับเอเยนซี่ทั้งหมดปัจจุบันงบโฆษณาดิจิทัลถูกนำไปใช้ตอบโจทย์ใด ในสัดส่วนเท่าไร(ผลรวมสัดส่วนต้องเท่ากับ 100% )</p>
 
     <ul>
         <li>
-            <input type="checkbox" checklist-model="ans2" value="1" /> Create/Increase Brand awareness</li>
+            Increase Awareness / Reach
+            <input type="text" ng-model="ans2[1]" numbers-only class="form-control answer-box"/>%</li>
         <li>
-            <input type="checkbox" checklist-model="ans2" value="2" /> Increase Sale</li>
+            Branding
+            <input type="text" ng-model="ans2[2]" numbers-only class="form-control answer-box"/>%</li>
         <li>
-            <input type="checkbox" checklist-model="ans2" value="3" /> Create/Boost E-commerce channel</li>
+            Engagement Consumer
+            <input type="text" ng-model="ans2[3]" numbers-only class="form-control answer-box"/>%</li>
         <li>
-            <input type="checkbox" checklist-model="ans2" value="4" /> Create/Increase/tighten Engagement</li>
+            CSR
+            <input type="text" ng-model="ans2[4]" numbers-only class="form-control answer-box"/>%</li>
         <li>
-            <input type="checkbox" checklist-model="ans2" value="5" /> Product/Service/Business PR</li>
+            Drive sales to offline channel
+            <input type="text" ng-model="ans2[5]" numbers-only class="form-control answer-box"/>%</li>
         <li>
-            <input type="checkbox" checklist-model="ans2" value="6" /> Product/Service/Business CRM</li>
+            Drive sales to online channel
+            <input type="text" ng-model="ans2[6]" numbers-only class="form-control answer-box"/>%</li>
         <li>
-            <input type="checkbox" checklist-model="ans2" value="7" /> Other, please specify
-            <input type="text" ng-model="ans27" class="form-control" style="width: 200px; display: inline;" />
-        </li>
+            E-commerce
+            <input type="text" ng-model="ans2[7]" numbers-only class="form-control answer-box"/>%</li>
+        <li>
+            CRM & Customer service
+            <input type="text" ng-model="ans2[8]" numbers-only class="form-control answer-box"/>%</li>
+        <li>
+            Lead Generation
+            <input type="text" ng-model="ans2[9]" numbers-only class="form-control answer-box"/>%</li>
+        <li>
+            PR
+            <input type="text" ng-model="ans2[10]" numbers-only class="form-control answer-box"/>%</li>
+        <li>
+            Others
+            <input type="text" ng-model="ans2other" placeholder="Others" class="form-control answer-box"/>
+            <input type="text" ng-model="ans2[11]" numbers-only class="form-control answer-box"/>%</li>
     </ul>
 </div>
 
