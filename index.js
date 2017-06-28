@@ -16,14 +16,14 @@ var tns = require('./tns-core');
 
 //var connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL);
 
-//var db_config = process.env.CLEARDB_DATABASE_URL;
+var db_config = process.env.CLEARDB_DATABASE_URL;
 
-var db_config = {
-    host: 'localhost',
-    user: 'root',
-    password: 'morningM00n',
-    database: 'tns_adsurvey_2017'
-};
+// var db_config = {
+//     host: 'localhost',
+//     user: 'root',
+//     password: 'morningM00n',
+//     database: 'tns_adsurvey_2017'
+// };
 
 // for keep db connection alive
 var connection;
