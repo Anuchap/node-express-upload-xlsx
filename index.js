@@ -7,21 +7,13 @@ var dateFormat = require('dateformat');
 
 var tns = require('./tns-core');
 
-// var connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: 'morningM00n',
-//     database: 'tns_adsurvey_2017'
-// });
-
-//var connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL);
-
+var S3_BUCKET = process.env.S3_BUCKET;
 var db_config = process.env.CLEARDB_DATABASE_URL;
 
 // var db_config = {
 //     host: 'localhost',
 //     user: 'root',
-//     password: '',
+//     password: 'morningM00n',
 //     database: 'tns_adsurvey_2017'
 // };
 
@@ -48,9 +40,6 @@ function handleDisconnect() {
 }
 handleDisconnect();
 //setInterval(function () { connection.query('SELECT 1'); }, 5000);
-
-
-var S3_BUCKET = process.env.S3_BUCKET;
 
 var app = express();
 var upload = multer();

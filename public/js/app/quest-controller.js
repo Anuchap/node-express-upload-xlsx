@@ -101,7 +101,7 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
             }            
         }
         if (total !== parseInt($scope.ans4_1)) {
-            alert('กรุณาใส่ให้ผลรวมทั้งหมดให้เท่ากับข้อ 4.1.');
+            alert('กรุณาระบุคำตอบโดยให้ผลรวมทั้งหมดเท่ากับข้อ 4.1');
             return;
         }
         var ans = _.pluck(tmp, 'key');
@@ -129,7 +129,7 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
             }            
         }
         if (total > store.ans4_1) {
-            alert('กรุณาใส่ให้ผลรวมทั้งหมดไม่เกินในข้อ 4.1.');
+            alert('กรุณาระบุคำตอบโดยให้ผลรวมทั้งหมดไม่เกิน ' + store.ans4_1);
             return;
         }
         var ans = _.pluck(tmp, 'key');
@@ -152,10 +152,10 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
                 tmp.push({ key: i, value: $scope.ans6[i] });
             }            
         }
-        /*if (total !== store.ans4_1) {
-            alert('กรุณาใส่ให้ผลรวมทั้งหมดให้เท่ากับข้อ 4.1.');
+        if (total !== store.ans4_1) {
+            alert('กรุณาระบุคำตอบโดยให้ผลรวมทั้งหมดเท่ากับ ' + store.ans4_1);
             return;
-        }*/
+        }
         var ans = _.pluck(tmp, 'key');
         var opt = _.pluck(tmp, 'value');
         sendAnswer('6', ans, opt, function () {
