@@ -216,7 +216,7 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
             sendAnswer('10.2', $scope.ans10_2, null, function () {
                 store.ans10_2 = $scope.ans10_2;
 
-                $http.get('api/setstatus/' + $stateParams.uid + '/finished').success(function () {
+                $http.get('api/setstatus/' + $stateParams.uid + '/finish').success(function () {
                     $state.go('thankyou2', {
                         uid: $stateParams.uid
                     });

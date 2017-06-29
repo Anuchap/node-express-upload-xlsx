@@ -21,7 +21,7 @@ function convertSheetToJson(sheet) {
 
         for (var j = 0; j < headers.length; j++) {
 
-            var discipline = { name: headers[j].name, value: sheet[i][headers[j].index], subs: [], subheaders: [], isvalid: true, type: null };
+            var discipline = { name: headers[j].name, value: Number(sheet[i][headers[j].index]), subs: [], subheaders: [], isvalid: true, type: null };
 
             if (discipline.value) {
                 cat.total += discipline.value;
@@ -29,8 +29,8 @@ function convertSheetToJson(sheet) {
                     case 'Instagram Ad':
                         discipline.type = 3;
                         discipline.subheaders = ['Display', 'Video'];
-                        discipline.subs.push(sheet[i + 2][headers[j].index]);
-                        discipline.subs.push(sheet[i + 2][headers[j].index + 1]);
+                        discipline.subs.push(Number(sheet[i + 2][headers[j].index]));
+                        discipline.subs.push(Number(sheet[i + 2][headers[j].index + 1]));
                         discipline.isvalid = _.sum(_.compact(discipline.subs)) === 1;
                         break;
                     case 'Display':
@@ -42,9 +42,9 @@ function convertSheetToJson(sheet) {
                             discipline.type = 4;
                             discipline.subheaders = ['Online Video', 'Web Banner', 'Social Media'];
                         }
-                        discipline.subs.push(sheet[i + 2][headers[j].index]);
-                        discipline.subs.push(sheet[i + 2][headers[j].index + 1]);
-                        discipline.subs.push(sheet[i + 2][headers[j].index + 2]);
+                        discipline.subs.push(Number(sheet[i + 2][headers[j].index]));
+                        discipline.subs.push(Number(sheet[i + 2][headers[j].index + 1]));
+                        discipline.subs.push(Number(sheet[i + 2][headers[j].index + 2]));
                         discipline.isvalid = _.sum(_.compact(discipline.subs)) === 1;   
                         break;
                     case 'YouTube Ad':
@@ -53,10 +53,10 @@ function convertSheetToJson(sheet) {
                         discipline.subheaders = ['Display Desktop', 'Display Mobile', 'Video Desktop', 'Video Mobile'];
                         var display = sheet[i + 2][headers[j].index];
                         var video = sheet[i + 2][headers[j].index + 3];
-                        discipline.subs.push(sheet[i + 4][headers[j].index] * display);
-                        discipline.subs.push(sheet[i + 4][headers[j].index + 1] * display);
-                        discipline.subs.push(sheet[i + 4][headers[j].index + 3] * video);
-                        discipline.subs.push(sheet[i + 4][headers[j].index + 4] * video);
+                        discipline.subs.push(Number(sheet[i + 4][headers[j].index] * display));
+                        discipline.subs.push(Number(sheet[i + 4][headers[j].index + 1] * display));
+                        discipline.subs.push(Number(sheet[i + 4][headers[j].index + 3] * video));
+                        discipline.subs.push(Number(sheet[i + 4][headers[j].index + 4] * video));
                         discipline.isvalid = _.sum(_.compact(discipline.subs)) > 0.99;
                         break;
                 }

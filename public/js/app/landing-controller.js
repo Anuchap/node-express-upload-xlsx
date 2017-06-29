@@ -3,12 +3,12 @@ angular.module('myApp').controller('landingCtrl', function ($scope, $state, $sta
     $scope.goToBrowse = function () {
         loader.show();
         $http.get('api/checkstatus/' + $stateParams.uid).success(function (data) {
-            if (data.status === 'submitted') {
+            if (data.status === 'submit') {
                 loader.hide();
                 $state.go('thankyou', {
                     uid: $stateParams.uid
                 });
-            } else if (data.status === 'finished') {
+            } else if (data.status === 'finish') {
                 loader.hide();
                 var modalInstance = $modal.open({
                     templateUrl: 'myModalContent.html',
@@ -20,7 +20,7 @@ angular.module('myApp').controller('landingCtrl', function ($scope, $state, $sta
                     }
                 });
             } else {
-                $http.get('api/setstatus/' + $stateParams.uid + '/started').success(function () {
+                $http.get('api/setstatus/' + $stateParams.uid + '/start').success(function () {
                     loader.hide();
                     $state.go('summary', {
                         uid: $stateParams.uid

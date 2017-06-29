@@ -20,23 +20,23 @@ var db_config = process.env.CLEARDB_DATABASE_URL;
 // for keep db connection alive
 var connection;
 function handleDisconnect() {
-  connection = mysql.createConnection(db_config); // Recreate the connection, since
-                                                  // the old one cannot be reused.
-  connection.connect(function(err) {              // The server is either down
-    if(err) {                                     // or restarting (takes a while sometimes).
-      console.log('error when connecting to db:', err);
-      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-    }                                     // to avoid a hot loop, and to allow our node script to
-  });                                     // process asynchronous requests in the meantime.
-                                          // If you're also serving http, display a 503 error.
-  connection.on('error', function(err) {
-    console.log('db error', err);
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      handleDisconnect();                         // lost due to either server restart, or a
-    } else {                                      // connnection idle timeout (the wait_timeout
-      throw err;                                  // server variable configures this)
-    }
-  });
+    connection = mysql.createConnection(db_config); // Recreate the connection, since
+    // the old one cannot be reused.
+    connection.connect(function (err) {              // The server is either down
+        if (err) {                                     // or restarting (takes a while sometimes).
+            console.log('error when connecting to db:', err);
+            setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+        }                                     // to avoid a hot loop, and to allow our node script to
+    });                                     // process asynchronous requests in the meantime.
+    // If you're also serving http, display a 503 error.
+    connection.on('error', function (err) {
+        console.log('db error', err);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+            handleDisconnect();                         // lost due to either server restart, or a
+        } else {                                      // connnection idle timeout (the wait_timeout
+            throw err;                                  // server variable configures this)
+        }
+    });
 }
 handleDisconnect();
 //setInterval(function () { connection.query('SELECT 1'); }, 5000);
@@ -45,7 +45,9 @@ var app = express();
 var upload = multer();
 
 app.set('port', process.env.PORT);
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+//app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (req, res) {
@@ -89,16 +91,22 @@ app.post('/api/upload/:agencyId', upload.any(), function (req, res) {
     };
     s3.putObject(param, function (err) {
         if (err) console.log(err);
-        log(req.params.agencyId, filename, 'uploaded');
+        log(req.params.agencyId, filename, 'upload');
         var result = tns.xlsxToJson(req.files[0].buffer);
         res.json(result);
     });
 });
 
 app.post('/api/submit/:agencyId', function (req, res) {
-    genDisciplines(req.params.agencyId, 1, req.body[0]);
-    genDisciplines(req.params.agencyId, 2, req.body[1]);
-    updateStatus(req.params.agencyId, 'submitted');
+    connection.query('delete from discipline where agency_id = ?', [req.params.agencyId], function (err, res) {
+        if(err) {
+            console.log(err);
+            return;
+        }
+        genDisciplines(req.params.agencyId, 1, req.body[0]);
+        genDisciplines(req.params.agencyId, 2, req.body[1]);
+        updateStatus(req.params.agencyId, 'submit');
+    });
     res.json();
 });
 
@@ -129,8 +137,8 @@ function log(agencyId, fileName, status) {
     connection.query('insert into log(agency_id,datetime,filename,status) values (?,NOW(),?,?)',
         [agencyId, fileName, status], function (err, r) {
             if (err) console.log(err);
-            if (status === 'uploaded') {
-                connection.query('select id from log where agency_id = ? and status = "started" order by id desc limit 1', [agencyId], function (err, rows) {
+            if (status === 'upload') {
+                connection.query('select id from log where agency_id = ? and status = "start" order by id desc limit 1', [agencyId], function (err, rows) {
                     if (err) console.log(err);
                     connection.query('update log set filename = ? where id = ?', [fileName, rows[0].id], function (err, r) {
                         if (err) console.log(err);
@@ -149,7 +157,10 @@ function genDisciplines(agencyId, sheetNo, categories) {
             if (value) {
                 connection.query('insert into discipline(agency_id,sheet,name,category_name,value) values (?,?,?,?,?)',
                     [agencyId, sheetNo, disciplineName, categoryName, value], function (err, r) {
-                        if (err) console.log(err);
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
                         var disciplineId = r.insertId;
                         discipline.subs.forEach(function (sub, i) {
                             if (sub) {
