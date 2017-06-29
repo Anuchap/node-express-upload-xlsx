@@ -7,7 +7,7 @@ var dateFormat = require('dateformat');
 
 var tns = require('./tns-core');
 
-var S3_BUCKET = process.env.S3_BUCKET;
+var s3_bucket = process.env.S3_BUCKET;
 var db_config = process.env.CLEARDB_DATABASE_URL;
 
 // var db_config = {
@@ -85,7 +85,7 @@ app.post('/api/upload/:agencyId', upload.any(), function (req, res) {
     var filename = Date.now() + '_' + req.params.agencyId + '.xlsx';
     var s3 = new aws.S3();
     var param = {
-        Bucket: S3_BUCKET + '/upload',
+        Bucket: s3_bucket + '/upload',
         Key: filename,
         Body: file.buffer
     };
@@ -107,7 +107,11 @@ app.post('/api/submit/:agencyId', function (req, res) {
         genDisciplines(req.params.agencyId, 2, req.body[1]);
         updateStatus(req.params.agencyId, 'submit');
     });
-    res.json();
+    connection.query('select status from log where agency_id = ? and status = "back2"', [req.params.agencyId], function(err, rows) {
+        if(err)
+            res.json(err);
+        res.json({ skipPart2: rows.length > 0 });
+    });
 });
 
 app.post('/api/answer/:agencyId', function (req, res) {

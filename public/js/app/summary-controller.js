@@ -23,11 +23,11 @@ angular.module('myApp').controller('summaryCtrl', function ($scope, $state, $htt
 
             // transformation
             var data = [];
-            for(var i = 0; i< 56;i++) { 
-                if(res[0][i].total > 0 || res[1][i].total > 0) 
-                   data.push({ y15: res[0][i], y16: res[1][i] }); 
+            for (var i = 0; i < 56; i++) {
+                if (res[0][i].total > 0 || res[1][i].total > 0)
+                    data.push({ y15: res[0][i], y16: res[1][i] });
             }
-                        
+
             $scope.data = data;
             $scope.total15 = 0;
             _.each(data, function (item) {
@@ -75,21 +75,22 @@ angular.module('myApp').controller('summaryCtrl', function ($scope, $state, $htt
         });
     };
 
-    $scope.goToThankYou = function () {  
+    $scope.goToThankYou = function () {
         var data = [];
         angular.copy($scope.data, data);
         var a = [];
         var b = [];
 
-        _.each(data, function(item) {
+        _.each(data, function (item) {
             a.push(item.y15);
             b.push(item.y16);
         });
 
         loader.show();
-        $http.post('api/submit/' + $stateParams.uid, [a, b]).success(function () {
+        $http.post('api/submit/' + $stateParams.uid, [a, b]).success(function (res) {
             loader.hide();
-            $state.go('thankyou', {
+            var goto = res.skipPart2 ? 'confirm' : 'thankyou';
+            $state.go(goto, {
                 uid: $stateParams.uid
             });
         });

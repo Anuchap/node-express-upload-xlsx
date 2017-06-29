@@ -73,6 +73,11 @@ angular.module('myApp').config(function ($stateProvider, $urlRouterProvider) {
             templateUrl: 'partials/quests/quest10.html',
             controller: 'questCtrl'
         })
+        .state('confirm', {
+            url: '/confirm/:uid',
+            templateUrl: 'partials/quests/confirm.html',
+            controller: 'questCtrl'
+        })
         .state('thankyou2', {
             url: '/thankyou2/:uid',
             templateUrl: 'partials/thankyou2.html'
