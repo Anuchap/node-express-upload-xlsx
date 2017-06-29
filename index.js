@@ -13,7 +13,7 @@ var db_config = process.env.CLEARDB_DATABASE_URL;
 // var db_config = {
 //     host: 'localhost',
 //     user: 'root',
-//     password: 'morningM00n',
+//     password: '',
 //     database: 'tns_adsurvey_2017'
 // };
 
