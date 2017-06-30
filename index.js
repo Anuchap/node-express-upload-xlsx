@@ -41,13 +41,18 @@ function handleDisconnect() {
 handleDisconnect();
 //setInterval(function () { connection.query('SELECT 1'); }, 5000);
 
+function logErrors (err, req, res, next) {
+  console.error(err.stack)
+  next(err)
+}
+
 var app = express();
 var upload = multer();
 
 app.set('port', process.env.PORT);
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-//app.use(bodyParser.json());
+app.use(logErrors)
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (req, res) {
