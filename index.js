@@ -20,10 +20,10 @@ var db_config = process.env.CLEARDB_DATABASE_URL;
 // for keep db connection alive
 var connection = mysql.createPool({
   connectionLimit : 10,
-  host            : 'localhost',
-  user            : 'root',
-  password        : 'morningM00n',
-  database        : 'tns_adsurvey_2017'
+  host            : 'us-cdbr-iron-east-03.cleardb.net',
+  user            : 'b6f538f445462f',
+  password        : '88f21669',
+  database        : 'heroku_bf72f73387aedbd'
 });
 // function handleDisconnect() {
 //     connection = mysql.createConnection(db_config); // Recreate the connection, since
@@ -94,18 +94,18 @@ app.get('/api/setstatus/:agencyId/:status', function (req, res) {
 app.post('/api/upload/:agencyId', upload.any(), function (req, res) {
     var file = req.files[0];
     var filename = Date.now() + '_' + req.params.agencyId + '.xlsx';
-    // var s3 = new aws.S3();
-    // var param = {
-    //     Bucket: s3_bucket + '/upload',
-    //     Key: filename,
-    //     Body: file.buffer
-    // };
-    // s3.putObject(param, function (err) {
-    //     if (err) console.log(err);
+    var s3 = new aws.S3();
+    var param = {
+        Bucket: s3_bucket + '/upload',
+        Key: filename,
+        Body: file.buffer
+    };
+    s3.putObject(param, function (err) {
+        if (err) console.log(err);
         log(req.params.agencyId, filename, 'upload');
         var result = tns.xlsxToJson(req.files[0].buffer);
         res.json(result);
-    //});
+    });
 });
 
 app.post('/api/submit/:agencyId', function (req, res) {
