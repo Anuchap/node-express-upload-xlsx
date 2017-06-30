@@ -47,6 +47,11 @@ var connection = mysql.createPool({
 // handleDisconnect();
 //setInterval(function () { connection.query('SELECT 1'); }, 5000);
 
+connection.query('select 1', function(err, rows) {
+    if(err) console.log(err);
+    else console.log('DB OK');
+});
+
 function logErrors (err, req, res, next) {
   console.error(err.stack)
   next(err)
