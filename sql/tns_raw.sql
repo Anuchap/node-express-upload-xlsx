@@ -13,7 +13,7 @@ end;
 -- For part 1
 select 
 a.name as ResponsdentId, 
-d.category_name as Industry,
+trim(substring_index(substring_index(d.category_name, '(', 1), '(', -1)) as Industry,
 max(if(d.name = 'Search', value, null)) as 'Search',
 
 max(if(d.name = 'Display', value, null)) as 'Display',
