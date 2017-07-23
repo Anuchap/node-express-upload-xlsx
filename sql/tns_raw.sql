@@ -62,7 +62,7 @@ order by a.seq, d.category_name
 -- For part 2
 select agency.name as ResponsdentId,
 max(if(qno = '1', answer, null)) as 'Q1',
-max(if(qno = '2', answer, null)) as 'Q2',
+max(if(qno = '2', substring_index(substring_index(answer, '@', 1), '@', -1), null)) as 'Q2',
 max(if(qno = '3', answer, null)) as 'Q3',
 max(if(qno = '4.1', answer, null)) as 'Q4.1',
 max(if(qno = '4.2', answer, null)) as 'Q4.2',
