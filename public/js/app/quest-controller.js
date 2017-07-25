@@ -128,10 +128,10 @@ angular.module('myApp').controller('questCtrl', function ($scope, $http, $state,
                 tmp.push({ key: i, value: $scope.ans5[i] });
             }            
         }
-        if (total > store.ans4_1) {
-            alert('กรุณาระบุคำตอบโดยให้ผลรวมทั้งหมดไม่เกิน ' + store.ans4_1);
-            return;
-        }
+        // if (total > store.ans4_1) {
+        //     alert('กรุณาระบุคำตอบโดยให้ผลรวมทั้งหมดไม่เกิน ' + store.ans4_1);
+        //     return;
+        // }
         var ans = _.pluck(tmp, 'key');
         var opt = _.pluck(tmp, 'value');
         sendAnswer('5', ans, opt, function () {
